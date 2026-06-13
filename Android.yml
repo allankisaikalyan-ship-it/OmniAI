@@ -1,1 +1,29 @@
 
+name: Build Omni AI APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Unzip Omni AI project
+        run: unzip -o omniai.zip
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          
+      - run: chmod +x gradlew
+      - run: ./gradlew assembleDebug
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OmniAI-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
